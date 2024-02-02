@@ -5,7 +5,7 @@ from aiogram.enums import ParseMode
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-PATH_TO_HOME = Path(__name__).parent.parent.parent
+PATH_TO_HOME = Path(__file__).parent.parent.parent
 
 
 class DBSetting(BaseSettings):
@@ -38,8 +38,8 @@ class BotSetting(BaseSettings):
 
 
 class Settings(BaseSettings):
-    bot_setting = BotSetting()
-    db_setting = DBSetting()
+    bot_setting: BotSetting = BotSetting()
+    db_setting: DBSetting = DBSetting()
 
 
 @lru_cache
