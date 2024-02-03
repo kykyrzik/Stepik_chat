@@ -5,6 +5,8 @@ from aiogram.types import Message, FSInputFile
 from app.filter.arch_message import ArchFilter
 # TODO: add repr
 #  from app.service.repr.arch import load_url
+#  add id chat on the message.reply_animation
+#  Use Redis to store id photo
 
 router = Router(name=__name__)
 

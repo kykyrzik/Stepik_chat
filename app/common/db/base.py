@@ -1,15 +1,16 @@
 import abc
 import typing
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.common.types import Model, SessionType
 
 
 class AbstractCRUDRepository(abc.ABC,
                              typing.Generic[SessionType, Model]):
-    def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+
+    model: typing.Type[Model]
+
+    def __init__(self, session: SessionType) -> None:
+        self._session = session
 
     @abc.abstractmethod
     async def create(self, **values: typing.Any) -> typing.Any:
@@ -29,4 +30,3 @@ class AbstractCRUDRepository(abc.ABC,
     @abc.abstractmethod
     async def delete(self, *clauses: typing.Any) -> typing.Any:
         raise NotImplementedError
-
