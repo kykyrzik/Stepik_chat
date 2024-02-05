@@ -4,6 +4,5 @@ from app.database.models.base import Base
 
 
 class Media(Base):
-    id: Mapped[int] = mapped_column(index=True, primary_key=True)
-    name: Mapped[str] = mapped_column(nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(primary_key=True)
     url: Mapped[str] = mapped_column(nullable=False, unique=True)

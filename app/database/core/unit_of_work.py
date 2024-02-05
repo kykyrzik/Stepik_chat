@@ -1,22 +1,24 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncSessionTransaction
+
+from app.common.db.unit_of_work import AbstractUnitOfWork
 
 
-class SQLAlchemyUnitOfWork:
-    def __init__(self, session: AsyncSession):
-        self.session = session
-
-    async def __aenter__(self):
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-
-        if exc_type:
-            await self.rollback()
-        else:
-            await self.commit()
+class SQLAlchemyUnitOfWork(AbstractUnitOfWork[AsyncSession, AsyncSessionTransaction]):
 
     async def commit(self):
         await self.session.commit()
 
     async def rollback(self):
         await self.session.rollback()
+
+    async def create_transaction(self) -> None:
+        if not self.session.in_transaction() and self.session.is_active:
+            self._transaction = await self.session.begin()
+
+    async def close_transaction(self) -> None:
+        if self.session.is_active:
+            await self.session.close()
+
+
+def factory_unit_of_work(session: AsyncSession) -> SQLAlchemyUnitOfWork:
+    return SQLAlchemyUnitOfWork(session)

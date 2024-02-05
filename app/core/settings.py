@@ -21,11 +21,11 @@ class DBSetting(BaseSettings):
 
     @property
     def get_url(self) -> str:
-        return self.uri.format(self.user,
-                               self.password,
-                               self.host,
-                               self.port,
-                               self.name,
+        return self.uri.format(user=self.user,
+                               password=self.password,
+                               host=self.host,
+                               port=self.port,
+                               name=self.name
                                )
 
 
