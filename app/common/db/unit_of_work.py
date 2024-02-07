@@ -20,11 +20,9 @@ class UnitOfWork(Protocol):
 class AbstractUnitOfWork(UnitOfWork, Generic[SessionType, TransactionType]):
     def __init__(self, session: AsyncSession):
         self.session = session
-        self._transaction: TransactionType | None = None
 
     async def __aenter__(self) -> AbstractUnitOfWork[SessionType, TransactionType]:
-        if self._transaction:
-            await self._transaction()
+        await self.create_transaction()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):

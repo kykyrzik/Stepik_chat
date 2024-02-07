@@ -17,7 +17,7 @@ class AbstractCRUDRepository(abc.ABC,
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def read(self, *clauses: typing.Any) -> typing.Any:
+    async def _read(self, *clauses: typing.Any) -> typing.Any:
         raise NotImplementedError
 
     @abc.abstractmethod

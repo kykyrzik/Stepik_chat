@@ -1,4 +1,4 @@
-from typing import AsyncIterable, AsyncGenerator
+from typing import AsyncIterable
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,13 +8,12 @@ from app.database.core.unit_of_work import factory_unit_of_work
 
 
 class DatabaseGateway:
-
     def __init__(self, uow: SQLAlchemyUnitOfWork):
         self.uow = uow
 
     async def __aenter__(self):
         await self.uow.__aenter__()
-        await self
+        return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.uow.__aexit__(exc_type, exc_val, exc_tb)
@@ -23,11 +22,13 @@ class DatabaseGateway:
         return MediaRepr(self.uow.session)
 
 
-def database_gateway_factory(unit_of_work) -> DatabaseGateway:
+def database_gateway_factory(unit_of_work: SQLAlchemyUnitOfWork) -> DatabaseGateway:
     return DatabaseGateway(unit_of_work)
 
 
-async def transaction_gateway(session: AsyncSession) -> [DatabaseGateway]:
-    gateway = database_gateway_factory(factory_unit_of_work(session))
-    async with gateway:
-        await gateway
+async def transaction_gateway(session: AsyncSession) -> AsyncIterable[DatabaseGateway]:
+
+    async with database_gateway_factory(factory_unit_of_work(session)) as gateway:
+        yield gateway
+
+

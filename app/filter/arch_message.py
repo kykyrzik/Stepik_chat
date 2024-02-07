@@ -15,4 +15,4 @@ class ArchFilter(BaseFilter):
 async def check(message: Message) -> bool:
     for trigger in ARCH_WORDS:
         if trigger in message.text:
-            return True
+            return trigger

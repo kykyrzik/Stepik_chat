@@ -8,3 +8,6 @@ from app.database.models.media import Media
 
 class MediaRepr(BaseCRUD[AsyncSession, Media]):
     model: Type[Media] = Media
+
+    async def get_url(self, name: str) -> Media | None:
+        return await self._read(field=self.model.name, value=name)
