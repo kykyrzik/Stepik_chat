@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from typing import AsyncIterable
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,9 +27,7 @@ def database_gateway_factory(unit_of_work: SQLAlchemyUnitOfWork) -> DatabaseGate
     return DatabaseGateway(unit_of_work)
 
 
+@asynccontextmanager
 async def transaction_gateway(session: AsyncSession) -> AsyncIterable[DatabaseGateway]:
-
     async with database_gateway_factory(factory_unit_of_work(session)) as gateway:
         yield gateway
-
-

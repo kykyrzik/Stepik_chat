@@ -1,4 +1,4 @@
-from typing import Annotated, AsyncGenerator
+from typing import Annotated, AsyncGenerator, AsyncContextManager
 
 from aiogram import F, Router
 from aiogram.types import Message, FSInputFile
@@ -22,9 +22,9 @@ router = Router(name=__name__)
                 F.content_type.in_({'text'}))
 @inject
 async def arch_message(message: Message,
-                       gateway: Annotated[AsyncGenerator, Depends(TransactionGateway)]):
-    gateway: DatabaseGateway = [i async for i in gateway][0]
-    repository: MediaRepr = gateway.media()
+                       gateway: Annotated[AsyncContextManager, Depends(TransactionGateway)]):
+
+    repository: MediaRepr = (await gateway.__aenter__()).media()
     url = (await repository.get_url("arch")).url
     image_from_pc = FSInputFile(url)
     await message.answer_photo(image_from_pc)
