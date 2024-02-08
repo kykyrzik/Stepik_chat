@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 from fast_depends import dependency_provider
 
 from app.core.settings import load_setting
-from app.routers.arch_message import router
+from app.routers.send_photo import router
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
