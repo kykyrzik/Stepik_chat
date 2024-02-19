@@ -37,10 +37,27 @@ class BotSetting(BaseSettings):
     parse_mode: ParseMode | str = ParseMode.HTML
 
 
+class RedisSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=f"{PATH_TO_HOME}/.env",
+        case_sensitive=False,
+        env_prefix="REDIS_",
+    )
+    host: str
+    port: int
+    uri: str
+
+    @property
+    def get_url(self) -> str:
+        return self.uri.format(host=self.host,
+                               port=self.port)
+
+
+
 class Settings(BaseSettings):
     bot_setting: BotSetting = BotSetting()
     db_setting: DBSetting = DBSetting()
-
+    redis_settings: RedisSettings = RedisSettings()
 
 @lru_cache
 def load_setting() -> Settings:

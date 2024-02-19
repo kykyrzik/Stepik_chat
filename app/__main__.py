@@ -11,7 +11,9 @@ from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
 from app.common.marker.gateway import TransactionGateway
+from app.common.marker.redis import RedisMarker
 from app.database.core.gateway import transaction_gateway
+from app.database.redis.connection import get_connection_pool, get_redis_connection
 
 
 async def main():
@@ -19,6 +21,8 @@ async def main():
     setting = load_setting()
     engine = create_engine(setting.db_setting.get_url)
     async_session_maker = create_as_session_maker(engine)
+    redis_pool = get_connection_pool(setting.redis_settings.get_url)
+    dependency_provider.override(RedisMarker, lambda: get_redis_connection(redis_pool))  # type: ignore
     dependency_provider.override(TransactionGateway, lambda: transaction_gateway(async_session_maker()))
     dp = Dispatcher()
     dp.include_router(router)
