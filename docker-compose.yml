@@ -4,9 +4,9 @@ services:
   backend:
     build: .
     volumes:
-      - ./:/usr/src/
-    working_dir: /usr/src
-    command: sh -c 'alembic upgrade head && python -m src'
+      - ./:/usr/app/
+    working_dir: /usr/app
+    command: sh -c 'alembic upgrade head && python -m app'
     networks:
       - app-network
     env_file:

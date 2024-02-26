@@ -17,7 +17,7 @@ router = Router(name=__name__)
 @router.message(TriggerFilter(),
                 F.content_type.in_({'text'}))
 @inject
-async def arch_message(message: Message,
+async def send_photo(message: Message,
                        trigger: str,
                        gateway: Annotated[AsyncContextManager, Depends(TransactionGateway)],
                        client: Annotated[Redis, Depends(RedisMarker)]):
