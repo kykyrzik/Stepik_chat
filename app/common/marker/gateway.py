@@ -1,2 +1,2 @@
-class TransactionGateway:
-    pass
+def TransactionGatewayMarker():
+    yield NotImplementedError

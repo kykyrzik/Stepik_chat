@@ -6,12 +6,13 @@ from aiogram.filters import Command
 from aiogram.types import Message, FSInputFile
 from fast_depends import inject, Depends
 
-from app.database.repr.media.media import MediaRepr
-from app.common.marker.gateway import TransactionGateway
+from app.database.core.gateway import DatabaseGateway
+from app.common.marker.gateway import TransactionGatewayMarker
 
 
 add_router = Router(name=__name__)
 PATH_TO_FOLDER_PHOTO = str(Path(__file__).parent.parent.parent) + "/photo"
+
 # TODO:
 # 1. add message. if not admin. output message "add photo must only admin"
 
@@ -21,7 +22,7 @@ PATH_TO_FOLDER_PHOTO = str(Path(__file__).parent.parent.parent) + "/photo"
 @inject
 async def entry_photo(message: Message,
                       bot: Bot,
-                      gateway: Annotated[AsyncContextManager, Depends(TransactionGateway)],
+                      gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)],
                       ):
     await message.answer(text="Entry photo")
     path_photo = f"{PATH_TO_FOLDER_PHOTO}/{message.photo[-1].file_id}.jpg"

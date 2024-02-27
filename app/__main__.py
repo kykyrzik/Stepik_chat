@@ -11,9 +11,9 @@ from app.routers.add_photo import add_router
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
-from app.common.marker.gateway import TransactionGateway
+from app.common.marker.gateway import TransactionGatewayMarker
 from app.common.marker.redis import redis_marker
-from app.database.core.gateway import transaction_gateway
+from app.database.core.gateway import TransactionGateway
 from app.database.redis.connection import get_connection_pool, GetRedisConnection
 from app.core.loader import load_storage
 
@@ -26,7 +26,7 @@ async def main():
     async_session_maker = create_as_session_maker(engine)
     redis_pool = await get_connection_pool(setting.redis_settings.get_url)
     dependency_provider.override(redis_marker, GetRedisConnection(redis_pool))
-    dependency_provider.override(TransactionGateway, lambda: transaction_gateway(async_session_maker()))
+    dependency_provider.override(TransactionGatewayMarker, TransactionGateway(async_session_maker()))
     storage = await load_storage()
     dp = Dispatcher(storage=storage)
     dp.include_router(router)
