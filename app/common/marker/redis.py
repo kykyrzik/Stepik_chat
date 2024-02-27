@@ -1,2 +1,2 @@
-class RedisMarker:
-    pass
+def redis_marker():
+    yield NotImplementedError

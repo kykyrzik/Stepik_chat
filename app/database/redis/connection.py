@@ -5,6 +5,10 @@ async def get_connection_pool(url) -> redis.ConnectionPool:
     return redis.ConnectionPool.from_url(url)
 
 
-async def get_redis_connection(pool: redis.ConnectionPool) -> redis.Redis:
-    async with redis.Redis.from_pool(pool) as client:
-        yield client
+class GetRedisConnection:
+    def __init__(self, pool):
+        self.pool = pool
+
+    async def __call__(self) -> redis.Redis:
+        async with redis.Redis.from_pool(self.pool) as client:
+            yield client
