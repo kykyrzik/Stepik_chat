@@ -6,8 +6,7 @@ from aiogram import Bot, Dispatcher
 from fast_depends import dependency_provider
 
 from app.core.settings import load_setting
-from app.routers.send_photo import router
-from app.routers.add_photo.start_add_photo import add_router
+from app.routers.start_add_photo import add_router
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
@@ -16,7 +15,6 @@ from app.common.marker.redis import redis_marker
 from app.database.core.gateway import TransactionGateway
 from app.database.redis.connection import get_connection_pool, GetRedisConnection
 from app.core.loader import load_storage
-from app.middleware.filter_command import FilterCommandMiddleware
 
 
 # noinspection PyArgumentList
