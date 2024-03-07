@@ -53,11 +53,11 @@ class RedisSettings(BaseSettings):
                                port=self.port)
 
 
-
 class Settings(BaseSettings):
     bot_setting: BotSetting = BotSetting()
     db_setting: DBSetting = DBSetting()
     redis_settings: RedisSettings = RedisSettings()
+
 
 @lru_cache
 def load_setting() -> Settings:

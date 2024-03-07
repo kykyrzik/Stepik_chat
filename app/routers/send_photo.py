@@ -4,6 +4,7 @@ from redis.asyncio import Redis
 from aiogram import F, Router
 from aiogram.types import Message, FSInputFile
 from fast_depends import inject, Depends
+from aiogram.filters import StateFilter
 
 from app.database.core.gateway import DatabaseGateway
 from app.filter.filter_message import TriggerFilter
@@ -14,13 +15,13 @@ from app.common.marker.redis import redis_marker
 router = Router(name=__name__)
 
 
-@router.message(TriggerFilter(),
-                F.content_type.in_({'text'}))
+@router.message(TriggerFilter(), StateFilter(None))
 @inject
 async def send_photo(message: Message,
                      trigger: str,
                      gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)],
                      client: Annotated[Redis, Depends(redis_marker)]):
+    print("send")
     photo_id = client.get(trigger)
     if photo_id:
         await message.answer_photo(reply_to_message_id=photo_id)

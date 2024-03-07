@@ -7,7 +7,7 @@ from fast_depends import dependency_provider
 
 from app.core.settings import load_setting
 from app.routers.send_photo import router
-from app.routers.add_photo import add_router
+from app.routers.add_photo.start_add_photo import add_router
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
@@ -16,6 +16,7 @@ from app.common.marker.redis import redis_marker
 from app.database.core.gateway import TransactionGateway
 from app.database.redis.connection import get_connection_pool, GetRedisConnection
 from app.core.loader import load_storage
+from app.middleware.filter_command import FilterCommandMiddleware
 
 
 # noinspection PyArgumentList
@@ -29,8 +30,12 @@ async def main():
     dependency_provider.override(TransactionGatewayMarker, TransactionGateway(async_session_maker()))
     storage = await load_storage()
     dp = Dispatcher(storage=storage)
-    dp.include_router(router)
+    # middleware = FilterCommandMiddleware()
+
+    # router.message.outer_middleware.register(middleware)
     dp.include_router(add_router)
+    # dp.include_router(router)
+
     bot: Bot = Bot(setting.bot_setting.token, parse_mode=load_setting().bot_setting.parse_mode)
     await dp.start_polling(bot)
 
