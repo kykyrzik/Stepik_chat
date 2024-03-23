@@ -57,7 +57,7 @@ async def add_photo(message: Message,
 
     path_photo = f"{PATH_TO_FOLDER_PHOTO}/{message.photo[-1].file_id}.jpg"
     await bot.download(message.photo[-1],
-                       destination=PATH_TO_FOLDER_PHOTO
+                       destination=path_photo
                        )
     image_from_url = FSInputFile(path_photo)
     await state.update_data(url=image_from_url.path)
