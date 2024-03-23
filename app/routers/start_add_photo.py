@@ -12,7 +12,7 @@ from app.fsm.add_photo_state import AddPhotoState
 from app.common.marker.gateway import TransactionGatewayMarker
 from app.database.core.gateway import DatabaseGateway
 
-PATH_TO_FOLDER_PHOTO = str(Path(__file__).parent.parent.parent) + "/photo"
+PATH_TO_FOLDER_PHOTO = str(Path(__file__).parent.parent) + "/photos"
 
 add_router = Router(name=__name__)
 
@@ -54,12 +54,13 @@ async def add_photo(message: Message,
                     bot: Bot,
                     gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)],
                     state: FSMContext):
+
     path_photo = f"{PATH_TO_FOLDER_PHOTO}/{message.photo[-1].file_id}.jpg"
     await bot.download(message.photo[-1],
-                       destination=path_photo
+                       destination=PATH_TO_FOLDER_PHOTO
                        )
     image_from_url = FSInputFile(path_photo)
-    await state.update_data(url=image_from_url)
+    await state.update_data(url=image_from_url.path)
     print(state.storage)
 
 
