@@ -1,2 +1,2 @@
-def TransactionGatewayMarker():
+async def TransactionGatewayMarker():
     yield NotImplementedError

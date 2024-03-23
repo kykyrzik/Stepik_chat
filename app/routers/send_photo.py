@@ -22,7 +22,7 @@ async def send_photo(message: Message,
                      gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)],
                      client: Annotated[Redis, Depends(redis_marker)]):
     print("send")
-    photo_id = client.get(trigger)
+    photo_id = await client.get(trigger)
     if photo_id:
         await message.answer_photo(reply_to_message_id=photo_id)
     else:

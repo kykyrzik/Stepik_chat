@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import abc
 from typing import Protocol, Generic
 
@@ -16,10 +17,27 @@ class UnitOfWork(Protocol):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    async def rollback(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def commit(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def close_transaction(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    async def create_transaction(self):
+        raise NotImplementedError
+
 
 class AbstractUnitOfWork(UnitOfWork, Generic[SessionType, TransactionType]):
     def __init__(self, session: AsyncSession):
         self.session = session
+        self._transaction = None
 
     async def __aenter__(self) -> AbstractUnitOfWork[SessionType, TransactionType]:
         await self.create_transaction()
