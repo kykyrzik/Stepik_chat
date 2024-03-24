@@ -7,7 +7,7 @@ SessionFactory = TypeVar("SessionFactory")
 
 
 def create_engine(url) -> AsyncEngine:
-    return create_async_engine(url, echo=False)
+    return create_async_engine(url, echo=True)
 
 
 def create_as_session_maker(engine: AsyncEngine) -> SessionFactory:

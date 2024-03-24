@@ -7,7 +7,7 @@ from fast_depends import dependency_provider
 
 from app.core.settings import load_setting
 from app.routers.start_add_photo import add_router
-from app.routers.send_photo import router
+from app.routers.send_photo import send_router
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
@@ -32,8 +32,8 @@ async def main():
     # middleware = FilterCommandMiddleware()
 
     # router.message.outer_middleware.register(middleware)
-    # dp.include_router(add_router)
-    dp.include_router(router)
+    dp.include_router(add_router)
+    dp.include_router(send_router)
 
     bot: Bot = Bot(setting.bot_setting.token, parse_mode=load_setting().bot_setting.parse_mode)
     await dp.start_polling(bot)

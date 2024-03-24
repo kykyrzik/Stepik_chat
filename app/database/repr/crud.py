@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (insert,
                         select,
                         update,
-                        delete)
+                        delete, ColumnExpressionArgument)
 
 from app.common.types import Model, SessionType
 from app.common.db.base import AbstractCRUDRepository
@@ -19,20 +19,14 @@ class BaseCRUD(AbstractCRUDRepository[SessionType, Model]):
 
     async def create(self, **values: Any) -> Optional[Model]:
         stmt = insert(self.model).values(**values).returning(self.model)
-        return (await self._session.execute(stmt)).sclars().first()
+        return (await self._session.execute(stmt)).scalars().first()
 
-    async def _read(self, value: Any, field: Any) -> Optional[Model]:
-        try:
-            stmt = (select(self.model)
-                    .where(value == field)
-                    )
-            result = await self._session.scalar(stmt)
-            return result
-        except NoResultFound:
-            return None
+    async def read(self, *clauses: ColumnExpressionArgument[bool]) -> Optional[Model]:
+        stmt = select(self.model).where(*clauses)
+        return (await self._session.execute(stmt)).scalars().first()
 
     async def update(self,
-                     *clauses: Any,
+                     *clauses: ColumnExpressionArgument[bool],
                      **values: Any
                      ) -> Optional[Model]:
         stmt = update(self.model).where(*clauses).values(**values).returning(self.model)
