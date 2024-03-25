@@ -10,12 +10,18 @@ from app.database.core.gateway import DatabaseGateway
 from app.filter.filter_message import TriggerFilter
 from app.common.marker.gateway import TransactionGatewayMarker
 from app.common.marker.redis import redis_marker
+from app.filter.throttling import ThrottlingFilter
 
 
 send_router = Router(name=__name__)
 
 
-@send_router.message(F.text, TriggerFilter(), StateFilter(None))
+@send_router.message(
+    F.text,
+    TriggerFilter(),
+    ThrottlingFilter(rate=10),
+    StateFilter(None)
+    )
 @inject
 async def send_photo(message: Message,
                      trigger: Union[str, bool],
