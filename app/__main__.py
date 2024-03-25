@@ -29,9 +29,6 @@ async def main():
     dependency_provider.override(TransactionGatewayMarker, TransactionGateway(async_session_maker()))
     storage = await load_storage()
     dp = Dispatcher(storage=storage)
-    # middleware = FilterCommandMiddleware()
-
-    # router.message.outer_middleware.register(middleware)
     dp.include_router(add_router)
     dp.include_router(send_router)
 

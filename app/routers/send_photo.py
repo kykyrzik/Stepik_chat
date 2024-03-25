@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Union
 
 from redis.asyncio import Redis
 from aiogram import Router
@@ -18,7 +18,7 @@ send_router = Router(name=__name__)
 @send_router.message(TriggerFilter(), StateFilter(None))
 @inject
 async def send_photo(message: Message,
-                     trigger: str,
+                     trigger: Union[str, bool],
                      gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)],
                      client: Annotated[Redis, Depends(redis_marker)]):
 

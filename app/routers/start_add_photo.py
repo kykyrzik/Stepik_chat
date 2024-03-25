@@ -1,7 +1,6 @@
-from pathlib import Path
 from typing import Annotated
 
-from aiogram import Router, Bot
+from aiogram import Router, Bot, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.state import default_state
 from aiogram.types import Message, FSInputFile
@@ -17,32 +16,30 @@ PATH_TO_FOLDER_PHOTO = str(PATH_TO_HOME) + "/media"
 
 add_router = Router(name=__name__)
 
-# TODO:
-# 1. add message. if not admin. output message "add photo must only admin"
-# 2. simple user: if not start user
+# TODO: 1. add message. if not admin. output message "add photo must only admin"
+# TODO: 2. simple user: if not start user
 
 
 @add_router.message(Command("add", prefix="/"),
                     StateFilter(default_state)
                     )
 async def entry_photo(message: Message, state: FSMContext):
-    await message.answer(text="""Начнём же добавлять.
-     Введите слово, на которое будет реагировать бот
-     если вы хоитите выйти введите /cancel""")
+    await message.answer(text="""Начнём же добавлять. Введите слово, на которое будет реагировать бот""")
     await state.set_state(AddPhotoState.add_trigger)
 
 
-@add_router.message(StateFilter(AddPhotoState.add_trigger))
+@add_router.message(F.text, StateFilter(AddPhotoState.add_trigger))
 async def add_trigger(message: Message, state: FSMContext):
     trigger_word = message.text
     await state.update_data(name=trigger_word)
     await message.answer(text=f"""хорошо, вы установили {trigger_word}.
-                                  Теперь хотелось бы увидеть фотографию.
-                                  Отправьте же мне ее""")
+    Теперь хотелось бы увидеть фотографию.
+    Отправьте же мне ее"""
+                         )
     await state.set_state(AddPhotoState.add_photo)
 
 
-@add_router.message(StateFilter(AddPhotoState.add_photo))
+@add_router.message(F.photo, StateFilter(AddPhotoState.add_photo))
 @inject
 async def add_photo(message: Message,
                     bot: Bot,
@@ -60,11 +57,3 @@ async def add_photo(message: Message,
     await media_repr.create(**data)
     await message.answer(text='Фото успешно добавленно')
     await state.clear()
-
-
-@add_router.message(Command(commands='cancel'), ~StateFilter(default_state))
-async def process_cancel_command_state(message: Message, state: FSMContext):
-    await message.answer(text='Вы вышли из машины состояний')
-    await state.clear()
-
-
