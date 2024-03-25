@@ -10,17 +10,16 @@ from fast_depends import inject, Depends
 from app.fsm.add_photo_state import AddPhotoState
 from app.common.marker.gateway import TransactionGatewayMarker
 from app.database.core.gateway import DatabaseGateway
+from app.filter.is_admin import IsAdmin
 from app.core.settings import PATH_TO_HOME
 
 PATH_TO_FOLDER_PHOTO = str(PATH_TO_HOME) + "/media"
 
 add_router = Router(name=__name__)
 
-# TODO: 1. add message. if not admin. output message "add photo must only admin"
-# TODO: 2. simple user: if not start user
-
 
 @add_router.message(Command("add", prefix="/"),
+                    IsAdmin(),
                     StateFilter(default_state)
                     )
 async def entry_photo(message: Message, state: FSMContext):

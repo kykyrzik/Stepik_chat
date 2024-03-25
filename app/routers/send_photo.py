@@ -1,7 +1,7 @@
 from typing import Annotated, Union
 
 from redis.asyncio import Redis
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.types import Message, FSInputFile
 from fast_depends import inject, Depends
 from aiogram.filters import StateFilter
@@ -15,7 +15,7 @@ from app.common.marker.redis import redis_marker
 send_router = Router(name=__name__)
 
 
-@send_router.message(TriggerFilter(), StateFilter(None))
+@send_router.message(F.text, TriggerFilter(), StateFilter(None))
 @inject
 async def send_photo(message: Message,
                      trigger: Union[str, bool],

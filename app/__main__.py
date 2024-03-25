@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 from fast_depends import dependency_provider
 
 from app.core.settings import load_setting
-from app.routers.start_add_photo import add_router
+from app.routers.add_photo import add_router
 from app.routers.send_photo import send_router
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
@@ -15,10 +15,9 @@ from app.common.marker.gateway import TransactionGatewayMarker
 from app.common.marker.redis import redis_marker
 from app.database.core.gateway import TransactionGateway
 from app.database.redis.connection import get_connection_pool, GetRedisConnection
-from app.core.loader import load_storage
+from app.core.loader import load_storage, load_admins
 
 
-# noinspection PyArgumentList
 async def main():
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     setting = load_setting()
@@ -37,5 +36,4 @@ async def main():
 
 
 if __name__ == "__main__":
-
     asyncio.run(main())

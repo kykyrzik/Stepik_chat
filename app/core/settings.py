@@ -53,10 +53,20 @@ class RedisSettings(BaseSettings):
                                port=self.port)
 
 
+class ChatSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=f"{PATH_TO_HOME}/.env",
+        case_sensitive=False,
+        env_prefix="CHAT_",
+    )
+    id: int
+
+
 class Settings(BaseSettings):
     bot_setting: BotSetting = BotSetting()
     db_setting: DBSetting = DBSetting()
     redis_settings: RedisSettings = RedisSettings()
+    chat_settings: ChatSettings = ChatSettings()
 
 
 @lru_cache

@@ -13,7 +13,7 @@ from app.database.repr.media.media import MediaRepr
 
 @dataclass
 class TriggerFilter(BaseFilter):
-    async def __call__(self, message: Message) -> dict[str, str]:
+    async def __call__(self, message: Message) -> Union[dict[str, str], bool]:
         return await check(message)
 
 
