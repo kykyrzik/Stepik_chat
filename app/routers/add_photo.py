@@ -18,7 +18,7 @@ PATH_TO_FOLDER_PHOTO = str(PATH_TO_HOME) + "/media"
 add_router = Router(name=__name__)
 
 
-@add_router.message(Command("add", prefix="/"),
+@add_router.message(Command("add_photo"),
                     IsAdmin(),
                     StateFilter(default_state)
                     )
