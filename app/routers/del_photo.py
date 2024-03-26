@@ -14,7 +14,7 @@ from app.database.core.gateway import DatabaseGateway
 delete_router = Router()
 
 
-@delete_router.message(Command('delete_photo', prefix="/"),
+@delete_router.message(Command('delete_photo'),
                        StateFilter(None))
 @inject
 async def help_message(message: Message,

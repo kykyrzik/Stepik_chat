@@ -7,7 +7,7 @@ from aiogram.types import Message
 help_router = Router()
 
 
-@help_router.message(Command('help', prefix="/"),
+@help_router.message(Command('help'),
                      StateFilter(None))
 async def help_message(message: Message):
     await message.answer("Чтобы добавить новую фотку, введите /add \n"
