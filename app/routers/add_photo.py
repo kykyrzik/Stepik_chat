@@ -22,20 +22,31 @@ add_router = Router(name=__name__)
                     IsAdmin(),
                     StateFilter(default_state)
                     )
-async def entry_photo(message: Message, state: FSMContext):
-    await message.answer(text="""Начнём же добавлять. Введите слово, на которое будет реагировать бот""")
+async def entry_photo(message: Message,
+                      state: FSMContext):
+    await message.answer(text="""Начнём же добавлять. Введите слово, на которое будет реагировать бот\n
+    Введите /stop_photo ,чтобы остановить добавление фотографии""")
     await state.set_state(AddPhotoState.add_trigger)
 
 
 @add_router.message(F.text, StateFilter(AddPhotoState.add_trigger))
-async def add_trigger(message: Message, state: FSMContext):
+@inject
+async def add_trigger(message: Message,
+                      state: FSMContext,
+                      gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
+                      ):
+    media_repr = gateway.media()
     trigger_word = message.text
-    await state.update_data(name=trigger_word)
-    await message.answer(text=f"""хорошо, вы установили {trigger_word}.
-    Теперь хотелось бы увидеть фотографию.
-    Отправьте же мне ее"""
-                         )
-    await state.set_state(AddPhotoState.add_photo)
+    media_exists = await media_repr.get_url(trigger_word)
+    if media_exists:
+        await message.answer(f"Слово {trigger_word} уже занято")
+    else:
+        await state.update_data(name=trigger_word)
+        await message.answer(text=f"""хорошо, вы установили {trigger_word}.
+        Теперь хотелось бы увидеть фотографию.
+        Отправьте же мне ее"""
+                             )
+        await state.set_state(AddPhotoState.add_photo)
 
 
 @add_router.message(F.photo, StateFilter(AddPhotoState.add_photo))

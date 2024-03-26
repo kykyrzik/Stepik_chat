@@ -32,6 +32,6 @@ class BaseCRUD(AbstractCRUDRepository[SessionType, Model]):
         stmt = update(self.model).where(*clauses).values(**values).returning(self.model)
         return (await self._session.execute(stmt)).scalars().all()
 
-    async def delete(self, *clauses: Any) -> bool:
+    async def delete(self, *clauses: ColumnExpressionArgument[bool]) -> bool:
         stmt = delete(self.model).where(*clauses).returning(self.model)
         return (await self._session.execute(stmt)).scalars().all()

@@ -28,7 +28,7 @@ async def check(message: Message,
         return False
 
     for trigger_key in triggers:
-        pattern = f'{trigger_key}'
+        pattern = f'{trigger_key.lower()}'
         if search(pattern, message.text):
             return {"trigger": trigger_key}
 

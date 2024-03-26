@@ -7,8 +7,9 @@ from aiogram.types import Message
 help_router = Router()
 
 
-@help_router.message(Command('help//.', prefix="/"),
+@help_router.message(Command('help', prefix="/"),
                      StateFilter(None))
 async def help_message(message: Message):
     await message.answer("Чтобы добавить новую фотку, введите /add \n"
-                         "Для того, чтобы увидеть как я сделан, введите /shit")
+                         "Для того, чтобы увидеть как я сделан, введите /shit \n"
+                         "Чтобы удалить триггер введите /delete_photo &ltтриггер&gt")
