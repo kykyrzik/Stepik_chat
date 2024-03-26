@@ -28,8 +28,8 @@ async def check(message: Message,
         return False
 
     for trigger_key in triggers:
-        pattern = f'{trigger_key.lower()}'
-        if search(pattern, message.text):
+        pattern = f'{trigger_key}'
+        if search(pattern.capitalize(), message.text) or search(pattern.lower(), message.text):
             return {"trigger": trigger_key}
 
     return False

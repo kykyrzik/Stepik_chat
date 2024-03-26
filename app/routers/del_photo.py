@@ -10,11 +10,13 @@ from fast_depends import inject, Depends
 
 from app.common.marker.gateway import TransactionGatewayMarker
 from app.database.core.gateway import DatabaseGateway
+from app.filter.is_admin import IsAdmin
 
 delete_router = Router()
 
 
 @delete_router.message(Command('delete_photo'),
+                       IsAdmin(),
                        StateFilter(None))
 @inject
 async def help_message(message: Message,
@@ -22,9 +24,9 @@ async def help_message(message: Message,
                        ):
     media_repr = gateway.media()
     trigger = message.text[14:]
-    path: str = (await media_repr.get_url(trigger)).url
+    path = (await media_repr.get_url(trigger))
     if path:
-        os.remove(path)
+        os.remove(path.url)
         await media_repr.delete_media(trigger)
         await message.answer(f"Вы удалили слово {trigger}")
     else:
