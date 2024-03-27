@@ -8,11 +8,11 @@ from fast_depends import dependency_provider
 from app.core.settings import load_setting
 from app.routers import (help_router,
                          send_router,
-                         help,
                          delete_router,
                          shit_router,
                          add_router,
-                         cancel_router)
+                         cancel_router,
+                         show_router)
 from app.database.core.session import (create_engine,
                                        create_as_session_maker
                                        )
@@ -34,7 +34,8 @@ async def main():
     storage = await load_storage()
     dp = Dispatcher(storage=storage)
     dp.include_routers(cancel_router, delete_router, add_router,
-                       shit_router, help_router, send_router)
+                       shit_router, help_router, send_router,
+                       show_router)
 
     bot: Bot = Bot(setting.bot_setting.token, parse_mode=load_setting().bot_setting.parse_mode)
     await dp.start_polling(bot)

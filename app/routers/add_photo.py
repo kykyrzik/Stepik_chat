@@ -24,8 +24,7 @@ add_router = Router(name=__name__)
                     )
 async def entry_photo(message: Message,
                       state: FSMContext):
-    await message.answer(text="""Начнём же добавлять. Введите слово, на которое будет реагировать бот\n
-    Введите /stop_photo ,чтобы остановить добавление фотографии""")
+    await message.answer(text="""Начнём же добавлять. Введите слово, на которое будет реагировать бот\nВведите /stop_photo ,чтобы остановить добавление фотографии""")
     await state.set_state(AddPhotoState.add_trigger)
 
 
@@ -42,10 +41,7 @@ async def add_trigger(message: Message,
         await message.answer(f"Слово {trigger_word} уже занято")
     else:
         await state.update_data(name=trigger_word)
-        await message.answer(text=f"""хорошо, вы установили {trigger_word}.
-        Теперь хотелось бы увидеть фотографию.
-        Отправьте же мне ее"""
-                             )
+        await message.answer(text=f"""хорошо, вы установили {trigger_word}.\nТеперь хотелось бы увидеть фотографию.\nОтправьте же мне ее""")
         await state.set_state(AddPhotoState.add_photo)
 
 

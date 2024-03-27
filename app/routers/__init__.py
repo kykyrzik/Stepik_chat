@@ -4,8 +4,10 @@ from .send_photo import send_router
 from .add_photo import add_router
 from .shit import shit_router
 from .cancel import cancel_router
+from .show import show_router
 
 
 __all__ = ("help_router", "delete_router", "send_router",
-           "add_router", "shit_router", "cancel_router")
+           "add_router", "shit_router", "cancel_router",
+           "show_router")
 
