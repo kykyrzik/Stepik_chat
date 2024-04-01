@@ -36,7 +36,7 @@ async def add_trigger(message: Message,
                       ):
     media_repr = gateway.media()
     trigger_word = message.text
-    media_exists = await media_repr.get_url(trigger_word)
+    media_exists = await media_repr.get_url(trigger_word, message.chat.chat_id)
     if media_exists:
         await message.answer(f"Слово {trigger_word} уже занято")
     else:

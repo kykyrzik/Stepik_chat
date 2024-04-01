@@ -26,5 +26,5 @@ async def help_message(message: Message,
                        gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
                        ):
     media_repr = gateway.media()
-    all_trigger = await media_repr.get_all_trigger()
+    all_trigger = await media_repr.get_all_trigger(message.chat.id)
     await message.answer(**section_builder("Вот все триггеры:", all_trigger))

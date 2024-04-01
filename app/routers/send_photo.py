@@ -24,16 +24,16 @@ send_router = Router(name=__name__)
     )
 @inject
 async def send_photo(message: Message,
-                     trigger: Union[str, bool],
+                     id_trigger: Union[int, bool],
                      gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)],
                      client: Annotated[Redis, Depends(redis_marker)]):
 
-    photo_id = await client.get(trigger)
+    photo_id = await client.get( id_trigger)
     if photo_id:
         await message.answer_photo(photo_id)
     else:
         repository = gateway.media()
-        url = (await repository.get_url(trigger)).url
+        url = (await repository.get_url(id_trigger)).url
         image_from_url = FSInputFile(url)
         result = await message.answer_photo(image_from_url)
-        await client.set(trigger, result.photo[-1].file_id)
+        await client.set(id_trigger, result.photo[-1].file_id)
