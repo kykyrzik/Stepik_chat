@@ -1,6 +1,4 @@
 import asyncio
-import logging
-import sys
 
 from aiogram import Bot, Dispatcher
 from fast_depends import dependency_provider
@@ -21,10 +19,10 @@ from app.common.marker.redis import redis_marker
 from app.database.core.gateway import TransactionGateway
 from app.database.redis.connection import get_connection_pool, GetRedisConnection
 from app.core.loader import load_storage
+from app.core.logger import log
 
 
 async def main():
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     setting = load_setting()
     engine = create_engine(setting.db_setting.get_url)
     async_session_maker = create_as_session_maker(engine)
@@ -38,6 +36,7 @@ async def main():
                        show_router)
 
     bot: Bot = Bot(setting.bot_setting.token, parse_mode=load_setting().bot_setting.parse_mode)
+    log.info("Start pooling")
     await dp.start_polling(bot)
 
 
