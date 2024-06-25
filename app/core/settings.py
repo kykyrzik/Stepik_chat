@@ -53,6 +53,7 @@ class RedisSettings(BaseSettings):
                                port=self.port)
 
 
+# remove chat settings
 class ChatSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=f"{PATH_TO_HOME}/.env",
@@ -69,6 +70,5 @@ class Settings(BaseSettings):
     chat_settings: ChatSettings = ChatSettings()
 
 
-@lru_cache
 def load_setting() -> Settings:
     return Settings()

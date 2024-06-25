@@ -1,9 +1,9 @@
 import asyncio
 
 from aiogram import Bot, Dispatcher
-from fast_depends import dependency_provider
 
-from app.core.settings import load_setting
+from app.core.settings import load_setting, Settings
+from app.main.dependency import setup_dependency
 from app.routers import (help_router,
                          send_router,
                          delete_router,
@@ -11,31 +11,20 @@ from app.routers import (help_router,
                          add_router,
                          cancel_router,
                          show_router)
-from app.database.core.session import (create_engine,
-                                       create_as_session_maker
-                                       )
-from app.common.marker.gateway import TransactionGatewayMarker
-from app.common.marker.redis import redis_marker
-from app.database.core.gateway import TransactionGateway
-from app.database.redis.connection import get_connection_pool, GetRedisConnection
 from app.core.loader import load_storage
 from app.core.logger import log
 
 
 async def main():
-    setting = load_setting()
-    engine = create_engine(setting.db_setting.get_url)
-    async_session_maker = create_as_session_maker(engine)
-    redis_pool = await get_connection_pool(setting.redis_settings.get_url)
-    dependency_provider.override(redis_marker, GetRedisConnection(redis_pool))
-    dependency_provider.override(TransactionGatewayMarker, TransactionGateway(async_session_maker()))
+    settings: Settings = load_setting()
+    setup_dependency(settings)
     storage = await load_storage()
     dp = Dispatcher(storage=storage)
     dp.include_routers(cancel_router, delete_router, add_router,
                        shit_router, help_router, send_router,
                        show_router)
 
-    bot: Bot = Bot(setting.bot_setting.token, parse_mode=load_setting().bot_setting.parse_mode)
+    bot: Bot = Bot(settings.bot_setting.token, parse_mode=load_setting().bot_setting.parse_mode)
     log.info("Start pooling")
     await dp.start_polling(bot)
 

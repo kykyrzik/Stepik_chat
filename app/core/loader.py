@@ -1,25 +1,21 @@
 from typing import Annotated
 
 from aiogram import Bot
-from aiogram.fsm.storage.base import BaseStorage
+from aiogram.fsm import storage as aiogram_storage
+
 
 from fast_depends import Depends, inject
 from redis.asyncio import Redis
 
-from app.common.marker.redis import redis_marker
+from app.common.marker import RedisMarker
 
 
 @inject
-async def load_storage(client: Annotated[Redis, Depends(redis_marker)]) -> BaseStorage:
+async def load_storage(client: Annotated[Redis, Depends(RedisMarker)]) -> aiogram_storage.base.BaseStorage:
     try:
-        from aiogram.fsm.storage.redis import RedisStorage
-
-        storage = RedisStorage(redis=client)
+        storage = aiogram_storage.redis.RedisStorage(redis=client)
     except ImportError:
-        from aiogram.fsm.storage.memory import MemoryStorage
-
-        storage = MemoryStorage()  # type: ignore
-
+        storage = aiogram_storage.redis.MemoryStorage()
     return storage
 
 
