@@ -22,14 +22,13 @@ async def check(message: Message,
                 gateway: Annotated[DatabaseGateway, Depends(TransactionGatewayMarker)]
                 ) -> Union[dict[str, str], bool]:
     media_repr: MediaRepr = gateway.media()
-    triggers = await media_repr.get_all_trigger()
+    triggers = await media_repr.get_all_trigger_this_chat(message.chat.id)
 
     if not triggers:
         return False
 
     for trigger_key in triggers:
-        pattern = f'{trigger_key}'
+        pattern = f'{trigger_key.name}'
         if search(pattern.capitalize(), message.text) or search(pattern.lower(), message.text):
-            return {"trigger": trigger_key}
-
+            return {"trigger": trigger_key.id}
     return False

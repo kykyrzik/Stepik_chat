@@ -26,10 +26,6 @@ def database_gateway_factory(unit_of_work: SQLAlchemyUnitOfWork) -> DatabaseGate
     return DatabaseGateway(unit_of_work)
 
 
-class TransactionGateway:
-    def __init__(self, session: AsyncSession):
-        self.session = session
-
-    async def __call__(self) -> AsyncIterable[DatabaseGateway]:
-        async with database_gateway_factory(factory_unit_of_work(self.session)) as gateway:
-            yield gateway
+async def setup_transaction_gateway(session: AsyncSession) -> AsyncIterable[DatabaseGateway]:
+    async with database_gateway_factory(factory_unit_of_work(session)) as gateway:
+        yield gateway
