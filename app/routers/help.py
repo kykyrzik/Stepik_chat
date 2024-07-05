@@ -1,7 +1,6 @@
 from aiogram import Router
 from aiogram.filters.command import Command
 from aiogram.filters.state import StateFilter
-
 from aiogram.types import Message
 
 help_router = Router()

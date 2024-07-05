@@ -20,5 +20,3 @@ class MediaRepr(BaseCRUD[AsyncSession, Media]):
 
     async def delete_media(self, value: str) -> bool:
         return await self.delete(self.model.name == value)
-
-    async def check_url
